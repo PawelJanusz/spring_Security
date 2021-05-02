@@ -1,7 +1,12 @@
 package pl.spring.security.springSecurity.model;
 
+import javax.persistence.*;
+
+@Entity
 public class LoginUser {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String login;
     private String password;
