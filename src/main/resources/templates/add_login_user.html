@@ -6,8 +6,13 @@
 </head>
 <body>
 
-<form th:action="@{/addloginuser}" th:object="${newUser}" method="post"></form>
+<form th:action="@{/addloginuser}" th:object="${newUser}" method="post">
     <p>Login <input type="text" placeholder="Podaj login" th:field="*{login}" /></p>
     <p>Password <input type="password" placeholder="Podaj hasło" th:field="*{password}" /></p>
+
+    <input type="reset" value="Reset" />
+    <input type="submit" value="Zapisz" />
+</form>
+
 </body>
 </html>
