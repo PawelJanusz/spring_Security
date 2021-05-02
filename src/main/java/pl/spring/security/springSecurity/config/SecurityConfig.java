@@ -7,14 +7,18 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.sql.DataSource;
+
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
+    private final DataSource dataSource;
 
     @Autowired
-    public SecurityConfig(PasswordEncoder passwordEncoder) {
+    public SecurityConfig(PasswordEncoder passwordEncoder, DataSource dataSource) {
         this.passwordEncoder = passwordEncoder;
+        this.dataSource = dataSource;
     }
 
     @Override
@@ -29,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .formLogin()
-                .defaultSuccessUrl("/status");
+                .defaultSuccessUrl("/index");
     }
 
     @Override
@@ -42,5 +46,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("admin@test.pl")
                 .password(passwordEncoder.encode("admin"))
                 .roles("ADMIN");
+        auth.jdbcAuthentication()
+                .usersByUsernameQuery("select u.login, u.password, 1 from login_user u where u.login = ?")
+                .authoritiesByUsernameQuery("select u.login, u.role, 1 from login_user u where u.login = ?")
+                .dataSource(dataSource)
+                .passwordEncoder(passwordEncoder);
     }
 }
